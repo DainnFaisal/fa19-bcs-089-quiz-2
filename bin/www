@@ -1,0 +1,87 @@
+#!/usr/bin/env node
+ // dependencies
+var app = require('../app');
+var debug = require('debug')('fa19-bcs-089-crud-api:server');
+
+var http = require('http');
+
+// Storing in Express and getting port from srver
+
+var port = normalizePort(process.env.PORT || '4000');
+app.set('port', port);
+
+// creation of HTTP server
+var server = http.createServer(app);
+
+// listening express on provided port
+server.listen(port);
+server.on('error', onError);
+
+server.on('listening', onListening);
+
+// Normalizing a port into a string false or number
+
+function normalizePort(val) {
+    var port = parseInt(val, 10);
+
+
+    if (isNaN(port)) {
+
+        // pipe naming
+        return val;
+    }
+
+    if (port >= 0) {
+        // normalizing port no.
+        return port;
+    }
+    // else false condition 
+    return false;
+}
+
+// error server or event listner
+function onError(error) {
+    // listening
+    if (error.syscall !== 'listen') {
+        throw error;
+    }
+
+    var bind = typeof port === 'string' ?
+        'Pipe ' + port :
+
+        'Port ' + port;
+
+    // handling some errors with some messages
+    // using break statements
+    switch (error.code) {
+        case 'EACCES':
+
+            console.error(bind + ' requires elevated privileges');
+            process.exit(1);
+
+            break;
+
+        case 'EADDRINUSE':
+            console.error(bind + ' is already in use');
+
+            process.exit(1);
+            break;
+            // else remaining condition is error
+        default:
+            throw error;
+    }
+}
+
+// Event listener for HTTP server
+
+function onListening() {
+
+    var addr = server.address();
+
+    var bind = typeof addr === 'string' ?
+        'pipe ' + addr :
+
+        'port ' + addr.port;
+
+    debug('Listening on ' + bind);
+}
